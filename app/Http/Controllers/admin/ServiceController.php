@@ -30,13 +30,10 @@ class ServiceController extends Controller
     public function store(Request $request)
     {
         //
+        $request->merge(['slug' => Str::slug($request->slug)]);
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'slug' => 'required|string|max:255|unique:services,slug',
-            // 'short_desc' => 'required|string|max:255',
-            // 'content' => 'required|string',
-            // 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            // 'status' => 'required|boolean',
         ]);
 
         if ($validator->fails()) {
@@ -123,6 +120,8 @@ class ServiceController extends Controller
         return response()->json(['status' => false, 'message' => 'Service not found'], 404);
     }
 
+    $request->merge(['slug' => Str::slug($request->slug)]);
+
     $validator = Validator::make($request->all(), [
         'title' => 'required',
         'slug'  => 'required|unique:services,slug,' . $id,
@@ -203,6 +202,8 @@ class ServiceController extends Controller
             # code...
             return response()->json(['status' => false, 'message' => 'Service not found'], 404);
         }
+        File::delete(public_path('uploads/services/large/' . $service->image));
+        File::delete(public_path('uploads/services/small/' . $service->image));
         $service->delete();
         return response()->json(['status' => true, 'message' => 'Service deleted successfully'], 200);
     }
