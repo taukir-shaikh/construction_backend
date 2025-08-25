@@ -4,6 +4,7 @@ use App\Http\Controllers\admin\ArticleController;
 use App\Http\Controllers\admin\DashboardController;
 use App\Http\Controllers\admin\ProjectController;
 use App\Http\Controllers\admin\ServiceController;
+use App\Http\Controllers\admin\TestimonialController;
 use App\Http\Controllers\front\ProjectController as FrontProjectController;
 use App\Http\Controllers\front\ServiceController as FrontServiceController;
 use App\Http\Controllers\front\ArticleController as FrontArticleController;
@@ -46,6 +47,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('articles/{id}', [ArticleController::class, 'show']);
     Route::put('articles/{id}', [ArticleController::class, 'update']);
     Route::delete('articles/{id}', [ArticleController::class, 'destroy']);
+
+    // Testimonial Routes
+    Route::post('testimonials', [TestimonialController::class, 'store']);
+    Route::get('testimonials', [TestimonialController::class, 'index']);
+    Route::get('testimonials/{id}', [TestimonialController::class, 'show']);
+    Route::put('testimonials/{id}', [TestimonialController::class, 'update']);
+    Route::delete('testimonials/{id}', [TestimonialController::class, 'destroy']);
 
     //temp image routes
     Route::post('temp-images', [TempImageController::class, 'store']);

@@ -42,48 +42,48 @@ class ServiceController extends Controller
 
         $model = new Service();
         $model->title = $request->title;
-        $model->slug =Str::slug($request->slug);
+        $model->slug = Str::slug($request->slug);
         $model->short_desc = $request->short_desc;
         $model->content = $request->content;
         $model->status = $request->status;
         $model->save();
 
-           if ($request->imageId > 0 && $request->imageId != null) {
-        $tempImage = TempImage::find($request->imageId);
+        if ($request->imageId > 0 && $request->imageId != null) {
+            $tempImage = TempImage::find($request->imageId);
 
-        if ($tempImage) {
-            $ext = pathinfo($tempImage->name, PATHINFO_EXTENSION);
-            $filename = $model->id . '.' . $ext;
+            if ($tempImage) {
+                $ext = pathinfo($tempImage->name, PATHINFO_EXTENSION);
+                $filename = $model->id . '.' . $ext;
 
-            // ✅ Correct source path (inside /thumb/)
-            $sourcePath = public_path('uploads/temp/thumb/' . $tempImage->name);
+                // ✅ Correct source path (inside /thumb/)
+                $sourcePath = public_path('uploads/temp/thumb/' . $tempImage->name);
 
-            if (!file_exists($sourcePath)) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Temp image file not found: ' . $sourcePath
-                ], 404);
+                if (!file_exists($sourcePath)) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Temp image file not found: ' . $sourcePath
+                    ], 404);
+                }
+
+                // Create image manager instance
+                $manager = new ImageManager(new Driver());
+
+                // Create small thumbnail
+                $destPath = public_path('uploads/services/small/' . $filename);
+                $image = $manager->read($sourcePath);
+                $image->coverDown(500, 600);
+                $image->save($destPath);
+
+                // Create large thumbnail
+                $destPath = public_path('uploads/services/large/' . $filename);
+                $image = $manager->read($sourcePath);
+                $image->scaleDown(1200);
+                $image->save($destPath);
+
+                $model->image = $filename;
+                $model->save();
             }
-
-            // Create image manager instance
-            $manager = new ImageManager(new Driver());
-
-            // Create small thumbnail
-            $destPath = public_path('uploads/services/small/' . $filename);
-            $image = $manager->read($sourcePath);
-            $image->coverDown(500, 600);
-            $image->save($destPath);
-
-            // Create large thumbnail
-            $destPath = public_path('uploads/services/large/' . $filename);
-            $image = $manager->read($sourcePath);
-            $image->scaleDown(1200);
-            $image->save($destPath);
-
-            $model->image= $filename;
-            $model->save();
         }
-    }
         return response()->json(['status' => true, 'message' => 'Service added successfully', 'data' => $model], 200);
     }
 
@@ -94,11 +94,11 @@ class ServiceController extends Controller
     {
         //
         $service = Service::find($id);
-        if ($service==null) {
+        if ($service == null) {
             return response()->json(['status' => false, 'message' => 'Service not found'], 404);
         }
         return response()->json(['status' => true, 'data' => $service], 200);
-        
+
     }
 
     /**
@@ -112,84 +112,84 @@ class ServiceController extends Controller
     /**
      * Update the specified resource in storage.
      */
-  public function update(Request $request, $id)
-{
-    $service = Service::find($id);
+    public function update(Request $request, $id)
+    {
+        $service = Service::find($id);
 
-    if ($service == null) {
-        return response()->json(['status' => false, 'message' => 'Service not found'], 404);
-    }
+        if ($service == null) {
+            return response()->json(['status' => false, 'message' => 'Service not found'], 404);
+        }
 
-    $request->merge(['slug' => Str::slug($request->slug)]);
+        $request->merge(['slug' => Str::slug($request->slug)]);
 
-    $validator = Validator::make($request->all(), [
-        'title' => 'required',
-        'slug'  => 'required|unique:services,slug,' . $id,
-    ]);
+        $validator = Validator::make($request->all(), [
+            'title' => 'required',
+            'slug' => 'required|unique:services,slug,' . $id,
+        ]);
 
-    if ($validator->fails()) {
-        return response()->json(['status' => false, 'errors' => $validator->errors()], 422);
-    }
+        if ($validator->fails()) {
+            return response()->json(['status' => false, 'errors' => $validator->errors()], 422);
+        }
 
-    // Update service fields
-    $service->title      = $request->title;
-    $service->slug       = Str::slug($request->slug);
-    $service->short_desc = $request->short_desc;
-    $service->content    = $request->content;
-    $service->status     = $request->status;
-    $service->save();
+        // Update service fields
+        $service->title = $request->title;
+        $service->slug = Str::slug($request->slug);
+        $service->short_desc = $request->short_desc;
+        $service->content = $request->content;
+        $service->status = $request->status;
+        $service->save();
 
-    // Save temp image if provided
-    if ($request->imageId > 0 && $request->imageId != null) {
-        $oldImage = $service->image;
-        $tempImage = TempImage::find($request->imageId);
+        // Save temp image if provided
+        if ($request->imageId > 0 && $request->imageId != null) {
+            $oldImage = $service->image;
+            $tempImage = TempImage::find($request->imageId);
 
-        if ($tempImage) {
-            $ext = pathinfo($tempImage->name, PATHINFO_EXTENSION);
-            $filename = $service->id . '.' . $ext;
+            if ($tempImage) {
+                $ext = pathinfo($tempImage->name, PATHINFO_EXTENSION);
+                $filename = $service->id . '.' . $ext;
 
-            // ✅ Correct source path (inside /thumb/)
-            $sourcePath = public_path('uploads/temp/thumb/' . $tempImage->name);
+                // ✅ Correct source path (inside /thumb/)
+                $sourcePath = public_path('uploads/temp/thumb/' . $tempImage->name);
 
-            if (!file_exists($sourcePath)) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Temp image file not found: ' . $sourcePath
-                ], 404);
-            }
+                if (!file_exists($sourcePath)) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Temp image file not found: ' . $sourcePath
+                    ], 404);
+                }
 
-            // Create image manager instance
-            $manager = new ImageManager(new Driver());
+                // Create image manager instance
+                $manager = new ImageManager(new Driver());
 
-            // Create small thumbnail
-            $destPath = public_path('uploads/services/small/' . $filename);
-            $image = $manager->read($sourcePath);
-            $image->coverDown(500, 600);
-            $image->save($destPath);
+                // Create small thumbnail
+                $destPath = public_path('uploads/services/small/' . $filename);
+                $image = $manager->read($sourcePath);
+                $image->coverDown(500, 600);
+                $image->save($destPath);
 
-            // Create large thumbnail
-            $destPath = public_path('uploads/services/large/' . $filename);
-            $image = $manager->read($sourcePath);
-            $image->scaleDown(1200);
-            $image->save($destPath);
+                // Create large thumbnail
+                $destPath = public_path('uploads/services/large/' . $filename);
+                $image = $manager->read($sourcePath);
+                $image->scaleDown(1200);
+                $image->save($destPath);
 
-            $service->image= $filename;
-            $service->save();
+                $service->image = $filename;
+                $service->save();
 
-            if ($oldImage!='') {
-                # code...
-                File::delete(public_path('uploads/services/large/' . $oldImage));
-                File::delete(public_path('uploads/services/small/' . $oldImage));
+                if ($oldImage != '') {
+                    # code...
+                    File::delete(public_path('uploads/services/large/' . $oldImage));
+                    File::delete(public_path('uploads/services/small/' . $oldImage));
+                }
             }
         }
-    }
 
-    return response()->json([
-        'status'  => true,
-        'message' => 'Service updated successfully',
-        'data'    => $service
-    ], 200);
-}
+        return response()->json([
+            'status' => true,
+            'message' => 'Service updated successfully',
+            'data' => $service
+        ], 200);
+    }
 
     /**
      * Remove the specified resource from storage.
@@ -197,8 +197,8 @@ class ServiceController extends Controller
     public function destroy($id)
     {
         //
-        $service  = Service::find($id);
-        if ($service==null) {
+        $service = Service::find($id);
+        if ($service == null) {
             # code...
             return response()->json(['status' => false, 'message' => 'Service not found'], 404);
         }
