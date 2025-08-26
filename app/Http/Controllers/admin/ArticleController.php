@@ -122,7 +122,7 @@ class ArticleController extends Controller
         $article->save();
 
         if ($request->imageId > 0) {
-            $oldImage = $project->image;
+            $oldImage = $article->image;
             $tempImage = TempImage::find($request->imageId);
 
             if ($tempImage) {

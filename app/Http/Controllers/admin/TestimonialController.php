@@ -147,7 +147,10 @@ class TestimonialController extends Controller
         if ($testimonial == null) {
             return response()->json(['status' => false, 'message' => 'Testimonial not found'], 404);
         }
-        File::delete(public_path('uploads/testimonial/' . $testimonial->image));
+        if ($testimonial->image != '') {
+            # code...
+            File::delete(public_path('uploads/testimonial/' . $testimonial->image));
+        }
         $testimonial->delete();
         return response()->json(['status' => true, 'message' => 'Testimonial deleted successfully'], 200);
     }
