@@ -45,6 +45,7 @@ class TestimonialController extends Controller
         $model->testimonial = $request->testimonial;
         $model->citation = $request->citation;
         $model->status = $request->status;
+        $model->designation = $request->designation;
         $model->save();
 
         if ($request->imageId > 0 && $request->imageId != null) {
@@ -68,7 +69,7 @@ class TestimonialController extends Controller
                 $manager = new ImageManager(new Driver());
 
                 // Create small thumbnail
-                $destPath = public_path('uploads/testimonial/' . $filename);
+                $destPath = public_path('uploads/testimonials/' . $filename);
                 $image = $manager->read($sourcePath);
                 $image->coverDown(300, 300);
                 $image->save($destPath);
@@ -99,6 +100,7 @@ class TestimonialController extends Controller
         $testimonial->testimonial = $request->testimonial;
         $testimonial->citation = $request->citation;
         $testimonial->status = $request->status;
+        $testimonial->designation = $request->designation;
         $testimonial->save();
 
         if ($request->imageId > 0 && $request->imageId != null) {
@@ -123,7 +125,7 @@ class TestimonialController extends Controller
                 $manager = new ImageManager(new Driver());
 
                 // Create small thumbnail
-                $destPath = public_path('uploads/testimonial/' . $filename);
+                $destPath = public_path('uploads/testimonials/' . $filename);
                 $image = $manager->read($sourcePath);
                 $image->coverDown(300, 300);
                 $image->save($destPath);
@@ -133,7 +135,7 @@ class TestimonialController extends Controller
 
                 if ($oldImage != '') {
                     # code...
-                    File::delete(public_path('uploads/testimonial/' . $oldImage));
+                    File::delete(public_path('uploads/testimonials/' . $oldImage));
                 }
             }
         }
