@@ -21,4 +21,15 @@ class ArticleController extends Controller
         $articles = Article::orderBy('created_at', 'DESC')->where('status', 1)->limit($request->limit)->get();
         return response()->json(["status" => true, "data" => $articles, "code" => 200]);
     }
+
+    public function article($id)
+    {
+        $article = Article::find($id);
+        if ($article == null) {
+            # code...
+            return response()->json(["status" => false, "message" => "Article not found", "code" => 404]);
+        }
+        return response()->json(["status" => true, "data" => $article, "code" => 200]);
+    }
+
 }

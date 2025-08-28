@@ -19,4 +19,13 @@ class ServiceController extends Controller
       $services =   Service::where('status', 1)->take($request->get('limit'))->orderBy('created_at', 'DESC')->limit(3)->get();
       return $services;
     }
+
+    public function service($id){
+      $service = Service::find($id);
+      if ($service == null) {
+        # code...
+        return response()->json(['message' => 'Service not found'], 404);
+      }
+      return $service;
+    }
 }

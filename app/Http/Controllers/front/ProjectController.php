@@ -20,4 +20,14 @@ class ProjectController extends Controller
         $project = Project::orderBy('created_at', 'DESC')->where('status', 1)->get();
         return response()->json(['status' => true, 'data' => $project], 200);
     }
+
+    public function project($id)
+    {
+        $project = Project::find($id);
+        if ($project == null) {
+            # code...
+            return response()->json(['message' => 'Project not found'], 404);
+        }
+        return $project;
+    }
 }
