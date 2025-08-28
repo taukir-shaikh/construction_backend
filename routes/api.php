@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\admin\ArticleController;
 use App\Http\Controllers\admin\DashboardController;
+use App\Http\Controllers\admin\MemberController;
 use App\Http\Controllers\admin\ProjectController;
 use App\Http\Controllers\admin\ServiceController;
 use App\Http\Controllers\admin\TestimonialController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\front\ProjectController as FrontProjectController;
 use App\Http\Controllers\front\ServiceController as FrontServiceController;
 use App\Http\Controllers\front\ArticleController as FrontArticleController;
 use App\Http\Controllers\front\TestimonialController as FrontTestimonialController;
+use App\Http\Controllers\front\MemberController as FrontMemberController;
 use App\Http\Controllers\admin\TempImageController;
 use App\Http\Controllers\AuthenticationController;
 use Illuminate\Support\Facades\Route;
@@ -27,6 +29,7 @@ Route::get('get-articles', [FrontArticleController::class, 'index']);
 Route::get('get-latest-articles', [FrontArticleController::class, 'latestArticles']);
 Route::get('get-testimonials', [FrontTestimonialController::class, 'index']);
 Route::get('get-latest-testimonials', [FrontTestimonialController::class, 'latestTestimonials']);
+Route::get('get-members', [FrontMemberController::class, 'index']);
 
 Route::middleware('auth:sanctum')->group(function () {
     //protected routes
@@ -57,6 +60,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('testimonials/{id}', [TestimonialController::class, 'show']);
     Route::put('testimonials/{id}', [TestimonialController::class, 'update']);
     Route::delete('testimonials/{id}', [TestimonialController::class, 'destroy']);
+
+    // Member Routes
+    Route::post('members', [MemberController::class, 'store']);
+    Route::get('members', [MemberController::class, 'index']);
+    Route::get('members/{id}', [MemberController::class, 'show']);
+    Route::put('members/{id}', [MemberController::class, 'update']);
+    Route::delete('members/{id}', [MemberController::class, 'destroy']);
 
     //temp image routes
     Route::post('temp-images', [TempImageController::class, 'store']);
