@@ -6,6 +6,7 @@ use App\Http\Controllers\admin\MemberController;
 use App\Http\Controllers\admin\ProjectController;
 use App\Http\Controllers\admin\ServiceController;
 use App\Http\Controllers\admin\TestimonialController;
+use App\Http\Controllers\front\ContactController;
 use App\Http\Controllers\front\ProjectController as FrontProjectController;
 use App\Http\Controllers\front\ServiceController as FrontServiceController;
 use App\Http\Controllers\front\ArticleController as FrontArticleController;
@@ -33,6 +34,7 @@ Route::get('get-latest-articles', [FrontArticleController::class, 'latestArticle
 Route::get('get-testimonials', [FrontTestimonialController::class, 'index']);
 Route::get('get-latest-testimonials', [FrontTestimonialController::class, 'latestTestimonials']);
 Route::get('get-members', [FrontMemberController::class, 'index']);
+Route::post('contact-now', [ContactController::class, 'index']);
 
 Route::middleware('auth:sanctum')->group(function () {
     //protected routes
